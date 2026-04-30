@@ -58,19 +58,71 @@ class MyApp extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
               ],
               themeMode: themeMode,
+
+              
               theme: ThemeData(
+                useMaterial3: true,
                 brightness: Brightness.light,
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                useMaterial3: true,
-              ),
-              darkTheme: ThemeData(
-                brightness: Brightness.dark,
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: Colors.deepPurple,
-                  brightness: Brightness.dark,
+                colorScheme: ColorScheme(
+                  brightness: Brightness.light,
+                  primary: Colors.green,
+                  onPrimary: Colors.white,
+                  secondary: Colors.greenAccent,
+                  onSecondary: Colors.black,
+                  error: Colors.red,
+                  onError: Colors.white,
+                  background: Colors.white,
+                  onBackground: Colors.black,
+                  surface: Colors.grey.shade100,
+                  onSurface: Colors.black,
                 ),
-                useMaterial3: true,
+                appBarTheme: const AppBarTheme(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+                floatingActionButtonTheme: const FloatingActionButtonThemeData(
+                  backgroundColor: Colors.green,
+                ),
               ),
+
+              
+              darkTheme: ThemeData(
+                useMaterial3: true,
+                brightness: Brightness.dark,
+                colorScheme: const ColorScheme(
+                  brightness: Brightness.dark,
+                  primary: Colors.green,
+                  onPrimary: Colors.black,
+                  secondary: Colors.greenAccent,
+                  onSecondary: Colors.black,
+                  error: Colors.red,
+                  onError: Colors.black,
+                  background: Colors.black,
+                  onBackground: Colors.white,
+                  surface: Color(0xFF1E1E1E),
+                  onSurface: Colors.white,
+                ),
+                appBarTheme: const AppBarTheme(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.black,
+                ),
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.black,
+                  ),
+                ),
+                floatingActionButtonTheme: const FloatingActionButtonThemeData(
+                  backgroundColor: Colors.green,
+                ),
+              ),
+
               home: BlocBuilder<AuthCubit, dynamic>(
                 builder: (context, user) {
                   if (user == null) {
