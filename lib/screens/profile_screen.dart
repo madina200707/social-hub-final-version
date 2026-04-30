@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../cubits/auth_cubit.dart';
 import '../cubits/theme_cubit.dart';
 import '../cubits/language_cubit.dart';
 import '../app_strings.dart';
@@ -16,6 +17,7 @@ class ProfileScreen extends StatelessWidget {
     return BlocBuilder<LanguageCubit, Locale>(
       builder: (context, locale) {
         final lang = locale.languageCode;
+        final isDark = context.watch<ThemeCubit>().state == ThemeMode.dark;
 
         return Scaffold(
           appBar: AppBar(
@@ -23,94 +25,73 @@ class ProfileScreen extends StatelessWidget {
             centerTitle: true,
           ),
           body: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        const CircleAvatar(
-                          radius: 30,
-                          child: Icon(Icons.person, size: 30),
-                        ),
-                        const SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              AppStrings.get('user', lang),
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(user?.email ?? "No email"),
-                          ],
-                        ),
-                      ],
-                    ),
+                CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.green,
+                  child: const Icon(
+                    Icons.person,
+                    color: Colors.white,
+                    size: 40,
                   ),
                 ),
-                const SizedBox(height: 20),
 
-                Text(
-                  AppStrings.get('language', lang),
-                  style: const TextStyle(fontSize: 18),
-                ),
                 const SizedBox(height: 10),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<LanguageCubit>().changeLanguage('en');
-                      },
-                      child: const Text('EN'),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<LanguageCubit>().changeLanguage('ru');
-                      },
-                      child: const Text('RU'),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<LanguageCubit>().changeLanguage('kk');
-                      },
-                      child: const Text('KZ'),
-                    ),
-                  ],
+                Text(
+                  user?.email ?? "No email",
+                  style: const TextStyle(fontSize: 16),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 25),
 
-                ElevatedButton.icon(
-                  onPressed: () {
-                    context.read<ThemeCubit>().toggleTheme();
-                  },
-                  icon: const Icon(Icons.dark_mode),
-                  label: Text(AppStrings.get('toggleTheme', lang)),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
+                ListTile(
+                  leading: const Icon(Icons.language),
+                  title: Text(AppStrings.get('language', lang)),
+                  trailing: DropdownButton<String>(
+                    value: lang,
+                    items: const [
+                      DropdownMenuItem(value: "en", child: Text("EN")),
+                      DropdownMenuItem(value: "ru", child: Text("RU")),
+                      DropdownMenuItem(value: "kk", child: Text("KZ")),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        context.read<LanguageCubit>().changeLanguage(value);
+                      }
+                    },
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                ListTile(
+                  leading: const Icon(Icons.palette),
+                  title: Text(AppStrings.get('toggleTheme', lang)),
+                  trailing: Switch(
+                    value: isDark,
+                    activeColor: Colors.green,
+                    onChanged: (_) {
+                      context.read<ThemeCubit>().toggleTheme();
+                    },
+                  ),
+                ),
 
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    await FirebaseAuth.instance.signOut();
-                  },
-                  icon: const Icon(Icons.logout),
-                  label: Text(AppStrings.get('logout', lang)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    minimumSize: const Size(double.infinity, 50),
+                const SizedBox(height: 25),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    onPressed: () {
+                      context.read<AuthCubit>().logout();
+                    },
+                    icon: const Icon(Icons.logout),
+                    label: Text(AppStrings.get('logout', lang)),
                   ),
                 ),
               ],
